@@ -18,10 +18,8 @@ nltk.download('wordnet')
 
 try:
     nltk.data.find('tokenizers/punkt')
-    nltk.data.find('tokenizers/punkt_tab')
 except LookupError:
     nltk.download('punkt')
-    nltk.download('punkt_tab')
 
 # Load additional resources if needed
 try:
