@@ -40,8 +40,7 @@ model = joblib.load("svm_model.joblib")
 vectorizer = joblib.load("vectorizer.joblib")
 st.write("Model and vectorizer loaded successfully!")
 #vectorizer = joblib.load("C:\\Users\\R\\OneDrive\\Desktop\\Ironhack\\Week4\\project\\vectorizer1.joblib")
-if not hasattr(vectorizer, 'idf_'):
-    raise ValueError("The vectorizer is not fitted.")
+
 
 # Function to preprocess user input text
 def text_preprocessing(text):
