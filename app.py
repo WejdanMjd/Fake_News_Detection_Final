@@ -1,37 +1,5 @@
 
 import streamlit as st
-import joblib
-import re
-import nltk
-import numpy as np
-import pickle
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-import contractions
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-
-
-# Ensure necessary NLTK resources are available
-try:
-    nltk.data.find('tokenizers/punkt')
-    nltk.data.find('tokenizers/punkt_tab')
-except LookupError:
-    nltk.download('punkt')
-    nltk.download('punkt_tab')
-
-# Load additional resources if needed
-try:
-    nltk.data.find('stopwords')
-except LookupError:
-    nltk.download('stopwords')
-
-try:
-    nltk.data.find('wordnet')
-except LookupError:
-    nltk.download('wordnet')
-
 st.markdown("""
     <style>
         .stApp {
@@ -81,6 +49,39 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
+import joblib
+import re
+import nltk
+import numpy as np
+import pickle
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+import contractions
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
+
+# Ensure necessary NLTK resources are available
+try:
+    nltk.data.find('tokenizers/punkt')
+    nltk.data.find('tokenizers/punkt_tab')
+except LookupError:
+    nltk.download('punkt')
+    nltk.download('punkt_tab')
+
+# Load additional resources if needed
+try:
+    nltk.data.find('stopwords')
+except LookupError:
+    nltk.download('stopwords')
+
+try:
+    nltk.data.find('wordnet')
+except LookupError:
+    nltk.download('wordnet')
+
+
 # Load models and vectorizer
 models = {
     "Logistic Regression": joblib.load("logistic_regression_model.joblib"),
