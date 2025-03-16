@@ -11,11 +11,11 @@ import nltk
 
 import nltk
 
-# Download required NLTK resources explicitly
+# Download missing NLTK resources
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
-
+nltk.download('omw-1.4') 
 try:
     nltk.data.find('tokenizers/punkt')
 except LookupError:
