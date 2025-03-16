@@ -2,46 +2,43 @@ import streamlit as st
 import joblib
 import re
 import nltk
-import numpy as np
-import pickle
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import contractions
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
+import os
+import nltk
 
-# Ensure necessary NLTK resources are available
+
 try:
     nltk.data.find('tokenizers/punkt')
+    nltk.data.find('tokenizers/punkt_tab')
 except LookupError:
     nltk.download('punkt')
+    nltk.download('punkt_tab')
 
+# Load additional resources if needed
 try:
-    nltk.data.find('corpora/stopwords')
+    nltk.data.find('stopwords')
 except LookupError:
     nltk.download('stopwords')
 
 try:
-    nltk.data.find('corpora/wordnet')
+    nltk.data.find('wordnet')
 except LookupError:
     nltk.download('wordnet')
+
 
 # Load models and vectorizer
 models = {
     "Logistic Regression": joblib.load("logistic_regression_model.joblib"),
     "Multinomial Naïve Bayes": joblib.load("naive_bayes_model.joblib"),
-    "Support Vector Machine (SVM)": joblib.load("svm_model.joblib"),
-    "Word2Vec with Logistic Regression": joblib.load("logistic_regression_model_word2vec.pkl")
+    "Support Vector Machine (SVM)": joblib.load("svm_model.joblib")
 }
 
 vectorizer = joblib.load("vectorizer.joblib")
 if not hasattr(vectorizer, 'idf_'):
     raise ValueError("The vectorizer is not fitted.")
-
-# Load word2vec model (if needed)
-# For example:
-# word2vec_model = ...  # Load the Word2Vec model if it's not loaded already
 
 # Sidebar information
 st.sidebar.header("🔍 About the App")
@@ -53,7 +50,6 @@ st.sidebar.write(
     - Logistic Regression 
     - Multinomial Naïve Bayes 
     - Support Vector Machine (SVM)
-    - Logistic Regression (Word2Vec)
 
     **How to Use:**
     1. Select a model from the dropdown.
@@ -82,24 +78,12 @@ def text_preprocessing(text):
     expanded_text = contractions.fix(" ".join(tokens))  # Expand contractions
     return " ".join(word_tokenize(expanded_text))  # Tokenize again & return
 
-def sentence_to_vec(sentence, word2vec_model):
-    words = sentence.split()
-    word_vecs = [word2vec_model[word] for word in words if word in word2vec_model]
-    if len(word_vecs) == 0:
-        return np.zeros(word2vec_model.vector_size)
-    return np.mean(word_vecs, axis=0)
-
 if st.button("Predict"):
     if user_input.strip():
-        if target_model == "Word2Vec with Logistic Regression":
-            processed_text = text_preprocessing(user_input)
-            text_vectorized = sentence_to_vec(processed_text, word2vec_model)
-            text_vectorized = np.array(text_vectorized).reshape(1, -1)
-            prediction = models[target_model].predict(text_vectorized)[0]
-        else:
-            processed_text = text_preprocessing(user_input)
-            text_vectorized = vectorizer.transform([processed_text])
-            prediction = models[target_model].predict(text_vectorized)[0]
+        processed_text = text_preprocessing(user_input)
+        text_vectorized = vectorizer.transform([processed_text])
+        model = models[target_model]
+        prediction = model.predict(text_vectorized)[0]
         
         if prediction == 1:
             st.success("✅ This news appears to be **REAL**!")
