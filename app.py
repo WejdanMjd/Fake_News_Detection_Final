@@ -11,6 +11,7 @@ import contractions
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
+
 # Ensure necessary NLTK resources are available
 try:
     nltk.data.find('tokenizers/punkt')
@@ -41,7 +42,6 @@ vectorizer = joblib.load("vectorizer.joblib")
 if not hasattr(vectorizer, 'idf_'):
     raise ValueError("The vectorizer is not fitted.")
 
-# Streamlit UI Configuration
 st.set_page_config(
     page_title="Fake News Detection App",
     page_icon="📰",
@@ -54,7 +54,7 @@ st.sidebar.header("🔍 About the App")
 st.sidebar.write(
     """
     This AI-powered application classifies news articles as either **Real** or **Fake**.
-
+    
     **Models Available:**
     - Logistic Regression 
     - Multinomial Naïve Bayes 
@@ -67,22 +67,15 @@ st.sidebar.write(
     """
 )
 
-# Streamlit UI Elements
+# Streamlit UI
 st.title("Fake News Detection App 📰")
 st.subheader("Enter a news article to check if it's real or fake")
 
-# Create a layout with columns for better design
-col1, col2 = st.columns([3, 1])
+# Model selection
+target_model = st.selectbox("Choose a model:", list(models.keys()))
 
-with col1:
-    # Model selection
-    target_model = st.selectbox("Choose a model:", list(models.keys()))
-
-with col2:
-    st.image("https://via.placeholder.com/150", width=150)  # Placeholder for an image or logo if needed
-
-# User input area
-user_input = st.text_area("Enter news text here:", height=250)
+# User input
+user_input = st.text_area("Enter news text here:")
 
 def text_preprocessing(text):
     text = re.sub(r"[^\w\s]", "", text)  # Remove punctuation
@@ -94,17 +87,15 @@ def text_preprocessing(text):
     expanded_text = contractions.fix(" ".join(tokens))  # Expand contractions
     return " ".join(word_tokenize(expanded_text))  # Tokenize again & return
 
-# Predict Button with a loading spinner for a better UX
 if st.button("Predict"):
     if user_input.strip():
-        with st.spinner("Analyzing the news..."):
-            processed_text = text_preprocessing(user_input)
-            text_vectorized = vectorizer.transform([processed_text])
-            prediction = models[target_model].predict(text_vectorized)[0]
+        processed_text = text_preprocessing(user_input)
+        text_vectorized = vectorizer.transform([processed_text])
+        prediction = models[target_model].predict(text_vectorized)[0]
         
-            if prediction == 1:
-                st.success("✅ This news appears to be **REAL**!")
-            else:
-                st.error("❌ This news might be **FAKE**!")
+        if prediction == 1:
+            st.success("✅ This news appears to be **REAL**!")
+        else:
+            st.error("❌ This news might be **FAKE**!")
     else:
         st.warning("⚠️ Please enter some text to analyze.")
