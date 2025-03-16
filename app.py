@@ -31,11 +31,15 @@ except LookupError:
 
 # Load models and vectorizer
 
-models = {
-    "Logistic Regression": joblib.load("logistic_regression_model.joblib"),
-    "Multinomial Naïve Bayes": joblib.load("naive_bayes_model.joblib"),
-    "Support Vector Machine (SVM)": joblib.load("svm_model.joblib")
-}
+try:
+    models = {
+        "Logistic Regression": joblib.load("logistic_regression_model.joblib"),
+        "Multinomial Naïve Bayes": joblib.load("naive_bayes_model.joblib"),
+        "Support Vector Machine (SVM)": joblib.load("svm_model.joblib")
+    }
+except EOFError as e:
+    st.error(f"Error loading model: {e}")
+
 
 
 vectorizer = joblib.load("vectorizer.joblib")
