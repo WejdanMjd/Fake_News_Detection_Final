@@ -11,42 +11,6 @@ import contractions
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-# Ensure necessary NLTK resources are available
-try:
-    nltk.data.find('tokenizers/punkt')
-    nltk.data.find('tokenizers/punkt_tab')
-except LookupError:
-    nltk.download('punkt')
-    nltk.download('punkt_tab')
-
-# Load additional resources if needed
-try:
-    nltk.data.find('stopwords')
-except LookupError:
-    nltk.download('stopwords')
-
-try:
-    nltk.data.find('wordnet')
-except LookupError:
-    nltk.download('wordnet')
-
-# Load models and vectorizer
-models = {
-    "Logistic Regression": joblib.load("logistic_regression_model.joblib"),
-    "Multinomial Naïve Bayes": joblib.load("naive_bayes_model.joblib"),
-    "Support Vector Machine (SVM)": joblib.load("svm_model.joblib")
-}
-
-vectorizer = joblib.load("vectorizer.joblib")
-if not hasattr(vectorizer, 'idf_'):
-    raise ValueError("The vectorizer is not fitted.")
-
-st.set_page_config(
-    page_title="Fake News Detection App",
-    page_icon="📰",
-    layout="centered",
-    initial_sidebar_state="expanded",
-)
 # Custom CSS
 st.markdown("""
     <style>
@@ -97,6 +61,43 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
+
+# Ensure necessary NLTK resources are available
+try:
+    nltk.data.find('tokenizers/punkt')
+    nltk.data.find('tokenizers/punkt_tab')
+except LookupError:
+    nltk.download('punkt')
+    nltk.download('punkt_tab')
+
+# Load additional resources if needed
+try:
+    nltk.data.find('stopwords')
+except LookupError:
+    nltk.download('stopwords')
+
+try:
+    nltk.data.find('wordnet')
+except LookupError:
+    nltk.download('wordnet')
+
+# Load models and vectorizer
+models = {
+    "Logistic Regression": joblib.load("logistic_regression_model.joblib"),
+    "Multinomial Naïve Bayes": joblib.load("naive_bayes_model.joblib"),
+    "Support Vector Machine (SVM)": joblib.load("svm_model.joblib")
+}
+
+vectorizer = joblib.load("vectorizer.joblib")
+if not hasattr(vectorizer, 'idf_'):
+    raise ValueError("The vectorizer is not fitted.")
+
+st.set_page_config(
+    page_title="Fake News Detection App",
+    page_icon="📰",
+    layout="centered",
+    initial_sidebar_state="expanded",
+)
 
 # Sidebar information
 st.sidebar.header("🔍 About the App")
