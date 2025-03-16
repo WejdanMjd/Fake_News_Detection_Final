@@ -28,7 +28,8 @@ try:
 except LookupError:
     nltk.download('wordnet')
 
-print("✅ All necessary NLTK resources are installed!")
+import gensim.downloader as api
+word2vec_model = api.load("word2vec-google-news-300")
 # Load the saved model and vectorizer
 # Load models and vectorizer
 models = {
