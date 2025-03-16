@@ -10,6 +10,8 @@ from nltk.stem import WordNetLemmatizer
 import contractions
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
+import gensim.downloader as api
+import gensim
 try:
     nltk.data.find('tokenizers/punkt')
     nltk.data.find('tokenizers/punkt_tab')
@@ -28,7 +30,6 @@ try:
 except LookupError:
     nltk.download('wordnet')
 
-import gensim.downloader as api
 word2vec_model = api.load("word2vec-google-news-300")
 # Load the saved model and vectorizer
 # Load models and vectorizer
