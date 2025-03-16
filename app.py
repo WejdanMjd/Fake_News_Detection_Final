@@ -9,6 +9,12 @@ import contractions
 import os
 import nltk
 
+import nltk
+
+# Download required NLTK resources explicitly
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 try:
     nltk.data.find('tokenizers/punkt')
