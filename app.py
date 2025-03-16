@@ -3,14 +3,10 @@ import joblib
 import re
 import nltk
 import numpy as np
-import pickle
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import contractions
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-
 
 # Ensure necessary NLTK resources are available
 try:
@@ -42,6 +38,7 @@ vectorizer = joblib.load("vectorizer.joblib")
 if not hasattr(vectorizer, 'idf_'):
     raise ValueError("The vectorizer is not fitted.")
 
+# Streamlit UI Configuration
 st.set_page_config(
     page_title="Fake News Detection App",
     page_icon="📰",
@@ -67,16 +64,17 @@ st.sidebar.write(
     """
 )
 
-# Streamlit UI
+# Streamlit UI Elements
 st.title("Fake News Detection App 📰")
 st.subheader("Enter a news article to check if it's real or fake")
 
-# Model selection
+# Model selection in a clean format
 target_model = st.selectbox("Choose a model:", list(models.keys()))
 
-# User input
-user_input = st.text_area("Enter news text here:")
+# User input area for text
+user_input = st.text_area("Enter news text here:", height=250)
 
+# Function to preprocess the text
 def text_preprocessing(text):
     text = re.sub(r"[^\w\s]", "", text)  # Remove punctuation
     tokens = word_tokenize(text.lower())  # Tokenization & lowercase
@@ -87,15 +85,17 @@ def text_preprocessing(text):
     expanded_text = contractions.fix(" ".join(tokens))  # Expand contractions
     return " ".join(word_tokenize(expanded_text))  # Tokenize again & return
 
+# Prediction Button with a loading spinner
 if st.button("Predict"):
     if user_input.strip():
-        processed_text = text_preprocessing(user_input)
-        text_vectorized = vectorizer.transform([processed_text])
-        prediction = models[target_model].predict(text_vectorized)[0]
+        with st.spinner("Analyzing the news..."):
+            processed_text = text_preprocessing(user_input)
+            text_vectorized = vectorizer.transform([processed_text])
+            prediction = models[target_model].predict(text_vectorized)[0]
         
-        if prediction == 1:
-            st.success("✅ This news appears to be **REAL**!")
-        else:
-            st.error("❌ This news might be **FAKE**!")
+            if prediction == 1:
+                st.success("✅ This news appears to be **REAL**!")
+            else:
+                st.error("❌ This news might be **FAKE**!")
     else:
         st.warning("⚠️ Please enter some text to analyze.")
