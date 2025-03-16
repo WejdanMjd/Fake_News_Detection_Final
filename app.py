@@ -7,11 +7,13 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import contractions
 
-# Load necessary NLTK resources
-nltk.download('punkt')
+# Download only valid NLTK resources
+nltk.download('punkt')  
 nltk.download('stopwords')
 nltk.download('wordnet')
+nltk.download('omw-1.4')  # Required for lemmatization
 
+print("✅ All necessary NLTK resources are installed!")
 # Load the saved model and vectorizer
 model = joblib.load("svm_model.joblib")
 vectorizer = joblib.load("vectorizer.joblib")
