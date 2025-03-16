@@ -74,3 +74,7 @@ Due to the large size of the dataset and Conv1D model, they are stored on **Goog
   
 - **Conv1D Model (`conv1d_model.h5`)**:  
   [Download conv1d_model.h5 from Google Drive](https://drive.google.com/file/d/1sNWADRWP27uFqFr5rNLvhsVKw0uaOxZe/view?usp=sharing)
+
+## Live Demo
+
+You can also test the Fake News Classifier app online using the following [Streamlit link](https://fake-news-detection-neural-core.streamlit.app/).
