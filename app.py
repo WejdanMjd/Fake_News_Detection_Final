@@ -7,11 +7,23 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import contractions
 
-# Download only valid NLTK resources
-nltk.download('punkt')  
-nltk.download('stopwords')
-nltk.download('wordnet')
-nltk.download('omw-1.4')  # Required for lemmatization
+try:
+    nltk.data.find('tokenizers/punkt')
+    nltk.data.find('tokenizers/punkt_tab')
+except LookupError:
+    nltk.download('punkt')
+    nltk.download('punkt_tab')
+
+# Load additional resources if needed
+try:
+    nltk.data.find('stopwords')
+except LookupError:
+    nltk.download('stopwords')
+
+try:
+    nltk.data.find('wordnet')
+except LookupError:
+    nltk.download('wordnet')
 
 print("✅ All necessary NLTK resources are installed!")
 # Load the saved model and vectorizer
