@@ -30,11 +30,13 @@ except LookupError:
     nltk.download('wordnet')
 
 # Load models and vectorizer
+
 models = {
     "Logistic Regression": joblib.load("logistic_regression_model.joblib"),
     "Multinomial Naïve Bayes": joblib.load("naive_bayes_model.joblib"),
     "Support Vector Machine (SVM)": joblib.load("svm_model.joblib")
 }
+
 
 vectorizer = joblib.load("vectorizer.joblib")
 if not hasattr(vectorizer, 'idf_'):
