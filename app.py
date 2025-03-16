@@ -1,12 +1,17 @@
+
 import streamlit as st
 import joblib
 import re
 import nltk
 import numpy as np
+import pickle
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import contractions
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
 
 # Ensure necessary NLTK resources are available
 try:
@@ -27,6 +32,55 @@ try:
 except LookupError:
     nltk.download('wordnet')
 
+st.markdown("""
+    <style>
+        .stApp {
+            background-color: #f4f4f9;
+        }
+        .stButton>button {
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            padding: 15px;
+            cursor: pointer;
+        }
+        .stButton>button:hover {
+            background-color: #45a049;
+        }
+        .stSelectbox>div>div {
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .stTextArea>div>div {
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .stMarkdown {
+            font-size: 18px;
+            color: #333;
+        }
+        .stSubheader {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .stTitle {
+            font-size: 36px;
+            color: #34495e;
+            font-weight: 700;
+        }
+        .stAlert {
+            font-weight: bold;
+        }
+    </style>
+""", unsafe_allow_html=True)
 # Load models and vectorizer
 models = {
     "Logistic Regression": joblib.load("logistic_regression_model.joblib"),
@@ -38,7 +92,6 @@ vectorizer = joblib.load("vectorizer.joblib")
 if not hasattr(vectorizer, 'idf_'):
     raise ValueError("The vectorizer is not fitted.")
 
-# Streamlit UI Configuration
 st.set_page_config(
     page_title="Fake News Detection App",
     page_icon="📰",
@@ -64,17 +117,16 @@ st.sidebar.write(
     """
 )
 
-# Streamlit UI Elements
+# Streamlit UI
 st.title("Fake News Detection App 📰")
 st.subheader("Enter a news article to check if it's real or fake")
 
-# Model selection in a clean format
+# Model selection
 target_model = st.selectbox("Choose a model:", list(models.keys()))
 
-# User input area for text
-user_input = st.text_area("Enter news text here:", height=250)
+# User input
+user_input = st.text_area("Enter news text here:")
 
-# Function to preprocess the text
 def text_preprocessing(text):
     text = re.sub(r"[^\w\s]", "", text)  # Remove punctuation
     tokens = word_tokenize(text.lower())  # Tokenization & lowercase
@@ -85,17 +137,15 @@ def text_preprocessing(text):
     expanded_text = contractions.fix(" ".join(tokens))  # Expand contractions
     return " ".join(word_tokenize(expanded_text))  # Tokenize again & return
 
-# Prediction Button with a loading spinner
 if st.button("Predict"):
     if user_input.strip():
-        with st.spinner("Analyzing the news..."):
-            processed_text = text_preprocessing(user_input)
-            text_vectorized = vectorizer.transform([processed_text])
-            prediction = models[target_model].predict(text_vectorized)[0]
+        processed_text = text_preprocessing(user_input)
+        text_vectorized = vectorizer.transform([processed_text])
+        prediction = models[target_model].predict(text_vectorized)[0]
         
-            if prediction == 1:
-                st.success("✅ This news appears to be **REAL**!")
-            else:
-                st.error("❌ This news might be **FAKE**!")
+        if prediction == 1:
+            st.success("✅ This news appears to be **REAL**!")
+        else:
+            st.error("❌ This news might be **FAKE**!")
     else:
         st.warning("⚠️ Please enter some text to analyze.")
