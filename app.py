@@ -1,4 +1,3 @@
-
 import streamlit as st
 import joblib
 import re
@@ -11,7 +10,7 @@ from nltk.stem import WordNetLemmatizer
 import contractions
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-
+import matplotlib.pyplot as plt
 
 # Ensure necessary NLTK resources are available
 try:
@@ -92,11 +91,40 @@ if st.button("Predict"):
     if user_input.strip():
         processed_text = text_preprocessing(user_input)
         text_vectorized = vectorizer.transform([processed_text])
+
+        # Get the prediction probabilities
+        if hasattr(models[target_model], "predict_proba"):  # Check if the model can return probabilities
+            probabilities = models[target_model].predict_proba(text_vectorized)[0]
+        else:
+            st.warning(f"⚠️ The selected model '{target_model}' does not support prediction probabilities.")
+            probabilities = None
+
+        # Get the predicted class
         prediction = models[target_model].predict(text_vectorized)[0]
         
+        # Display prediction result
         if prediction == 1:
             st.success("✅ This news appears to be **REAL**!")
         else:
             st.error("❌ This news might be **FAKE**!")
+        
+        # Display the confidence probability if available
+        if probabilities is not None:
+            st.subheader("Prediction Confidence")
+            if prediction == 1:
+                st.write(f"Confidence of Real: {probabilities[1] * 100:.2f}%")
+                st.write(f"Confidence of Fake: {probabilities[0] * 100:.2f}%")
+            else:
+                st.write(f"Confidence of Fake: {probabilities[0] * 100:.2f}%")
+                st.write(f"Confidence of Real: {probabilities[1] * 100:.2f}%")
+
+            # Plot the prediction probabilities
+            labels = ['Fake', 'Real']
+            fig, ax = plt.subplots()
+            ax.bar(labels, probabilities, color=['red', 'green'])
+            ax.set_ylabel('Probability')
+            ax.set_title(f'Prediction Confidence for {target_model}')
+            st.pyplot(fig)
+
     else:
         st.warning("⚠️ Please enter some text to analyze.")
