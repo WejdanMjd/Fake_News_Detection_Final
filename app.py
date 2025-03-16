@@ -11,57 +11,6 @@ import contractions
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-# Custom CSS
-st.markdown("""
-    <style>
-        .stApp {
-            background-color: #f4f4f9;
-        }
-        .stButton>button {
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            padding: 15px;
-            cursor: pointer;
-        }
-        .stButton>button:hover {
-            background-color: #45a049;
-        }
-        .stSelectbox>div>div {
-            background-color: #ffffff;
-            border-radius: 5px;
-            padding: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .stTextArea>div>div {
-            background-color: #ffffff;
-            border-radius: 5px;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .stMarkdown {
-            font-size: 18px;
-            color: #333;
-        }
-        .stSubheader {
-            font-size: 24px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        .stTitle {
-            font-size: 36px;
-            color: #34495e;
-            font-weight: 700;
-        }
-        .stAlert {
-            font-weight: bold;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
 # Ensure necessary NLTK resources are available
 try:
     nltk.data.find('tokenizers/punkt')
@@ -92,6 +41,7 @@ vectorizer = joblib.load("vectorizer.joblib")
 if not hasattr(vectorizer, 'idf_'):
     raise ValueError("The vectorizer is not fitted.")
 
+# Streamlit UI Configuration
 st.set_page_config(
     page_title="Fake News Detection App",
     page_icon="📰",
@@ -104,7 +54,7 @@ st.sidebar.header("🔍 About the App")
 st.sidebar.write(
     """
     This AI-powered application classifies news articles as either **Real** or **Fake**.
-    
+
     **Models Available:**
     - Logistic Regression 
     - Multinomial Naïve Bayes 
@@ -117,15 +67,22 @@ st.sidebar.write(
     """
 )
 
-# Streamlit UI
+# Streamlit UI Elements
 st.title("Fake News Detection App 📰")
 st.subheader("Enter a news article to check if it's real or fake")
 
-# Model selection
-target_model = st.selectbox("Choose a model:", list(models.keys()))
+# Create a layout with columns for better design
+col1, col2 = st.columns([3, 1])
 
-# User input
-user_input = st.text_area("Enter news text here:")
+with col1:
+    # Model selection
+    target_model = st.selectbox("Choose a model:", list(models.keys()))
+
+with col2:
+    st.image("https://via.placeholder.com/150", width=150)  # Placeholder for an image or logo if needed
+
+# User input area
+user_input = st.text_area("Enter news text here:", height=250)
 
 def text_preprocessing(text):
     text = re.sub(r"[^\w\s]", "", text)  # Remove punctuation
@@ -137,15 +94,17 @@ def text_preprocessing(text):
     expanded_text = contractions.fix(" ".join(tokens))  # Expand contractions
     return " ".join(word_tokenize(expanded_text))  # Tokenize again & return
 
+# Predict Button with a loading spinner for a better UX
 if st.button("Predict"):
     if user_input.strip():
-        processed_text = text_preprocessing(user_input)
-        text_vectorized = vectorizer.transform([processed_text])
-        prediction = models[target_model].predict(text_vectorized)[0]
+        with st.spinner("Analyzing the news..."):
+            processed_text = text_preprocessing(user_input)
+            text_vectorized = vectorizer.transform([processed_text])
+            prediction = models[target_model].predict(text_vectorized)[0]
         
-        if prediction == 1:
-            st.success("✅ This news appears to be **REAL**!")
-        else:
-            st.error("❌ This news might be **FAKE**!")
+            if prediction == 1:
+                st.success("✅ This news appears to be **REAL**!")
+            else:
+                st.error("❌ This news might be **FAKE**!")
     else:
         st.warning("⚠️ Please enter some text to analyze.")
