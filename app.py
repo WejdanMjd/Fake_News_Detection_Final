@@ -32,7 +32,6 @@ try:
 except LookupError:
     nltk.download('wordnet')
 
-
 # Load models and vectorizer
 models = {
     "Logistic Regression": joblib.load("logistic_regression_model.joblib"),
