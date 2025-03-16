@@ -6,41 +6,15 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import contractions
-import os
-import nltk
 
-import nltk
-
-# Download missing NLTK resources
+# Load necessary NLTK resources
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
-nltk.download('omw-1.4') 
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
-
-# Load additional resources if needed
-try:
-    nltk.data.find('stopwords')
-except LookupError:
-    nltk.download('stopwords')
-
-try:
-    nltk.data.find('wordnet')
-except LookupError:
-    nltk.download('wordnet')
-
 
 # Load the saved model and vectorizer
-
-st.title("Model Loading Test")
 model = joblib.load("svm_model.joblib")
 vectorizer = joblib.load("vectorizer.joblib")
-st.write("Model and vectorizer loaded successfully!")
-#vectorizer = joblib.load("C:\\Users\\R\\OneDrive\\Desktop\\Ironhack\\Week4\\project\\vectorizer1.joblib")
-
 
 # Function to preprocess user input text
 def text_preprocessing(text):
