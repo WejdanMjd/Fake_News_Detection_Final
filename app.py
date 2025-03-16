@@ -47,58 +47,6 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="expanded",
 )
-
-# Custom CSS
-st.markdown("""
-    <style>
-        .stApp {
-            background-color: #f4f4f9;
-        }
-        .stButton>button {
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            padding: 15px;
-            cursor: pointer;
-        }
-        .stButton>button:hover {
-            background-color: #45a049;
-        }
-        .stSelectbox>div>div {
-            background-color: #ffffff;
-            border-radius: 5px;
-            padding: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .stTextArea>div>div {
-            background-color: #ffffff;
-            border-radius: 5px;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .stMarkdown {
-            font-size: 18px;
-            color: #333;
-        }
-        .stSubheader {
-            font-size: 24px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        .stTitle {
-            font-size: 36px;
-            color: #34495e;
-            font-weight: 700;
-        }
-        .stAlert {
-            font-weight: bold;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
 # Sidebar information
 st.sidebar.header("🔍 About the App")
 st.sidebar.write(
