@@ -2,11 +2,14 @@ import streamlit as st
 import joblib
 import re
 import nltk
+import numpy as np
+import pickle
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import contractions
-
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 try:
     nltk.data.find('tokenizers/punkt')
     nltk.data.find('tokenizers/punkt_tab')
