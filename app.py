@@ -41,6 +41,12 @@ vectorizer = joblib.load("vectorizer.joblib")
 if not hasattr(vectorizer, 'idf_'):
     raise ValueError("The vectorizer is not fitted.")
 
+st.set_page_config(
+    page_title="Fake News Detection App",
+    page_icon="📰",
+    layout="centered",
+    initial_sidebar_state="expanded",
+)
 # Sidebar information
 st.sidebar.header("🔍 About the App")
 st.sidebar.write(
