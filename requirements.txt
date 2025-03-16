@@ -1,6 +1,6 @@
 tensorflow
-numpy  
-scipy  
+scipy==1.11.4  
+numpy>=1.24.0  
 pandas
 contractions
 matplotlib
