@@ -3,7 +3,6 @@ import joblib
 import re
 import nltk
 import numpy as np
-import pickle
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
@@ -41,6 +40,55 @@ vectorizer = joblib.load("vectorizer.joblib")
 if not hasattr(vectorizer, 'idf_'):
     raise ValueError("The vectorizer is not fitted.")
 
+# Streamlit Page Setup
+st.set_page_config(
+    page_title="Fake News Detection App",
+    page_icon="📰",
+    layout="centered",
+    initial_sidebar_state="expanded",
+)
+
+# Custom CSS styling for the app
+st.markdown(
+    """
+    <style>
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            color: #007BFF;
+        }
+        .subheader {
+            font-size: 18px;
+            text-align: center;
+            color: #555;
+        }
+        
+        div.stButton > button {
+            width: 100%;
+            background-color: #007BFF;
+            color: white;
+            font-size: 18px;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+        }
+
+        .real-news {
+            color: green;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .fake-news {
+            color: red;
+            font-size: 22px;
+            font-weight: bold;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 # Sidebar information
 st.sidebar.header("🔍 About the App")
 st.sidebar.write(
@@ -59,9 +107,9 @@ st.sidebar.write(
     """
 )
 
-# Streamlit UI
-st.title("Fake News Detection App 📰")
-st.subheader("Enter a news article to check if it's real or fake")
+# Streamlit UI Title
+st.markdown("<p class='title'>Fake News Detection App 📰</p>", unsafe_allow_html=True)
+st.markdown("<p class='subheader'>Detect Fake vs. Real News</p>", unsafe_allow_html=True)
 
 # Model selection
 target_model = st.selectbox("Choose a model:", list(models.keys()))
@@ -79,15 +127,31 @@ def text_preprocessing(text):
     expanded_text = contractions.fix(" ".join(tokens))  # Expand contractions
     return " ".join(word_tokenize(expanded_text))  # Tokenize again & return
 
-if st.button("Predict"):
+def display_confidence(prediction):
+    # Confidence level (0 to 1) - in your case, it's the model output itself (0 or 1)
+    confidence = prediction * 100
+    st.write(f"Confidence: **{confidence:.2f}%**")
+
+    # Visualizing confidence as a bar chart
+    fig, ax = plt.subplots()
+    ax.barh(["Real News", "Fake News"], [confidence, 100 - confidence], color=["green", "red"])
+    ax.set_xlabel("Confidence (%)")
+    ax.set_title("Prediction Confidence")
+    st.pyplot(fig)
+
+# Prediction button
+if st.button("🔍 Predict"):
     if user_input.strip():
         processed_text = text_preprocessing(user_input)
         text_vectorized = vectorizer.transform([processed_text])
         prediction = models[target_model].predict(text_vectorized)[0]
         
         if prediction == 1:
-            st.success("✅ This news appears to be **REAL**!")
+            st.markdown("<p class='real-news'>✅ Prediction: Real News</p>", unsafe_allow_html=True)
         else:
-            st.error("❌ This news might be **FAKE**!")
+            st.markdown("<p class='fake-news'>❌ Prediction: Fake News</p>", unsafe_allow_html=True)
+        
+        # Display confidence score and visualization
+        display_confidence(prediction)
     else:
-        st.warning("⚠️ Please enter some text to analyze.")
+        st.warning("⚠️ Please enter some text for classification.")
