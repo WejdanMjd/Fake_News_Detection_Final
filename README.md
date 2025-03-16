@@ -53,6 +53,7 @@ Here are the key files in the project:
 
 - **`app.py`**: Main application script to run the fake news classifier as a web app using **Streamlit**.
 - **`requirements.txt`**: List of Python dependencies required for the project.
+- **`Final_main.ipynb`**: containing the code of training models.
 - **`data.csv`**: Dataset containing labeled news articles.
 - **`validation_predictions.csv`**: The file containing predictions made on the validation dataset.
 - **Model Files**:
