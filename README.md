@@ -75,6 +75,9 @@ Due to the large size of the dataset and Conv1D model, they are stored on **Goog
   
 - **Conv1D Model (`conv1d_model.h5`)**:  
   [Download conv1d_model.h5 from Google Drive](https://drive.google.com/file/d/1sNWADRWP27uFqFr5rNLvhsVKw0uaOxZe/view?usp=sharing)
+  - **Presentation**:
+(https://www.canva.com/design/DAGh7DlRIow/1KFfUG1Nqp0Q0ROaIT9zTg/view?utm_content=DAGh7DlRIow&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hb7e71a3c82)
+
 
 ## Live Demo
 
